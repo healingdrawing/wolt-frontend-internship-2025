@@ -1,0 +1,1 @@
+# wolt-frontend-internship-2025
