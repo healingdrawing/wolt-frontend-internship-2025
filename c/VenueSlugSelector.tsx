@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { simulate_tab_event } from '../utils/tab'
-import { custom_alert_for_input } from "../utils/alert"
+import { custom_alert_for_slug_select } from "../utils/alert"
+import { useAtom } from 'jotai'
+import { type Static_Venue_Data, type Dynamic_Venue_Data, type Distance_Range_Original } from '../utils/types'
+import { fetch_static_data, fetch_dynamic_data } from '../utils/fetch_data'
+import { static_data_atom, dynamic_data_atom } from '../utils/atoms'
 
 const VenueSlugSelector: React.FC = () => {
+  const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
+  const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
+  const inputRef = useRef<HTMLInputElement>(null)
   // Dummy fetch venue slug tails, as cities
   const fetch_slug_tails = (): string[] => {
       // Simulated local JSON string
-      const jsonString = '["Helsinki", "Tallin", "Helsinki", "Tallin"]'
-      return JSON.parse(jsonString) // JSON string into an string array
+      const json_string = '["Helsinki", "Tallinn"]'
+      return JSON.parse(json_string) // JSON string into an string array
   }
   const slug_tails: string[] = fetch_slug_tails()
 
@@ -22,11 +29,50 @@ const VenueSlugSelector: React.FC = () => {
     })
   }
 
-  const check_input_value = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.value = slug_tails.find(tail =>
+  const check_input_value = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const slug_tail = slug_tails.find(tail =>
       tail.toLocaleLowerCase() === e.target.value.toLocaleLowerCase()
-    ) || ''
-    custom_alert_for_input(e)
+    ) || '' 
+    
+    e.target.value = slug_tail
+    custom_alert_for_slug_select(e)
+
+    if (slug_tail !== '') {
+      // Check if static data is already fetched
+      if (!static_data_map.has(slug_tail)) {
+        try {
+          const raw = await fetch_static_data(slug_tail)
+          const coordinates = raw.venue_raw.location.coordinates
+          const staticData: Static_Venue_Data = { coordinates }
+          const remap = new Map(static_data_map)
+          remap.set(slug_tail, staticData)
+          set_static_data_map(remap)
+        } catch (error) {
+          console.error('Error fetching static data:', error)
+        }
+      }
+
+      try {
+        const raw = await fetch_dynamic_data(slug_tail)
+        const order_minimum_no_surcharge = raw.venue_raw.delivery_specs.order_minimum_no_surcharge
+        const base_price = raw.venue_raw.delivery_specs.delivery_pricing.base_price
+        const distance_ranges = raw.venue_raw.delivery_specs.delivery_pricing.distance_ranges.map((item: Distance_Range_Original) => {
+          const { flag, ...rest } = item
+          return rest
+        })
+
+        const dynamic_data:Dynamic_Venue_Data = {
+          order_minimum_no_surcharge, base_price,
+          distance_ranges
+        }
+        set_dynamic_data_obj(dynamic_data)
+      } catch (error) {
+        console.error('Error fetching dynamic data:', error)
+      }
+      
+    } else {
+      set_dynamic_data_obj(null) //todo remove?
+    }
   }
 
   const handle_key_up = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -35,24 +81,37 @@ const VenueSlugSelector: React.FC = () => {
     }
   }
 
-  // fill datalist when the component mounts, using slag_tails dummy data
-  useEffect(() => { fill_datalist_tag() }, [])
+  // fill datalist when the component mounts, using slug_tails dummy data
+  useEffect(() => {
+    fill_datalist_tag()
+    if (inputRef.current) inputRef.current.focus()
+  }, [])
+
+  useEffect(() => {
+    console.log("Current static data map:", static_data_map)
+  }, [static_data_map])
+
+  useEffect(() => {
+    console.log("Current dynamic data obj:", dynamic_data_obj)
+  }, [dynamic_data_obj])
 
   return (
     <div>
-      <label htmlFor='venue-slug'>Select Venue Slug:</label>
+      <label htmlFor='venue-slug'>Choose Venue Slug</label>
       <input
         type='text'
+        title='start typing and select'
         id='venue-slug'
         list='venue-options'
         placeholder='Start typing...'
         data-test-id='venue-slug-input' // Set data-test-id for testing
         onKeyUp={handle_key_up}
         onBlur={check_input_value}
+        ref={inputRef}
       />
       <datalist id='venue-options' />
     </div>
-  );
-};
+  )
+}
 
 export default VenueSlugSelector

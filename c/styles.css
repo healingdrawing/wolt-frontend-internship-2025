@@ -1,0 +1,9 @@
+* {
+  background-color: rgb(162, 162, 162);
+}
+
+div{
+  border: black 1px solid;
+  margin: 4px;
+  padding: 4px;
+}
