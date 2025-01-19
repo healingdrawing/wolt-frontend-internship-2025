@@ -1,0 +1,2 @@
+
+The `UserCoordinates.tsx` file includes not tested geolocation api implementation. Not used since looks like geolocation not supported for dev live server. And two extra ways to get coordinates are garbaging the screen.  
