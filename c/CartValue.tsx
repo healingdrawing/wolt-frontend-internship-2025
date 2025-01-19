@@ -26,7 +26,7 @@ const CartValue: React.FC = () => {
       e.target.value = ''
       custom_alert_for_float_input(e)
     }
-  };
+  }
 
   const handle_key_up = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
