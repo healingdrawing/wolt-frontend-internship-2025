@@ -9,6 +9,7 @@ const UserCoordinates: React.FC = () => {
   const input_latitude_ref = useRef<HTMLInputElement>(null) //geo/ip -> value
   const input_longitude_ref = useRef<HTMLInputElement>(null)
   const [coordinates, set_coordinates] = useAtom(user_coordinates_atom)
+  const [is_geolocation_disabled, set_is_geolocation_disabled] = useState(false)
   const [is_ip_location_disabled, set_is_ip_location_disabled] = useState(false)
 
   /** Regex for validating coordinates during input and so */
@@ -29,11 +30,51 @@ const UserCoordinates: React.FC = () => {
     }
   }
 
-  /** Function to get coordinates from IP, using remote service */
+  // try to get coordinates from Geolocation API // todo maybe remove, to not garbage ui
+  const get_geolocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          set_coordinates({
+            latitude: position.coords.latitude.toString(),
+            longitude: position.coords.longitude.toString(),
+          })
+        },
+        (error) => {
+          set_is_geolocation_disabled(true)
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error('User  denied the request for Geolocation.')
+              alert('Please allow location access to get your coordinates.')
+              break
+            case error.POSITION_UNAVAILABLE:
+              console.error('Location information is unavailable.')
+              alert('Location information is unavailable. Please check your settings.')
+              break
+            case error.TIMEOUT:
+              console.error('The request to get user location timed out.')
+              alert('The request to get your location timed out. Please try again.')
+              break
+            default:
+              console.error('An unknown error occurred.')
+              alert('An unknown error occurred. Please try again.')
+              break
+          }
+        }
+      )
+    } else {
+      set_is_geolocation_disabled(true)
+      console.error('Geolocation is not supported by this browser.')
+      alert('Geolocation is not supported by this browser.')
+    }
+  }
+
+  // Function to get coordinates from IP (mock implementation)
   const get_coordinates_from_ip = async () => {
     try {
       const response = await fetch('https://ipapi.co/json/')
 
+      // check (status 200-299) and hide button otherwise
       if (!response.ok) {
         set_is_ip_location_disabled(true)
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -126,6 +167,12 @@ const UserCoordinates: React.FC = () => {
           disabled={is_ip_location_disabled}
           onClick={get_coordinates_from_ip}
         >Get Coordinates from IP</button>
+        <button
+          style={{display:'none'}} //todo browser does not want to support it, maybe because of dev live server
+          title={!navigator.geolocation || is_geolocation_disabled ? 'N/A' : ''}
+          disabled={!navigator.geolocation || is_geolocation_disabled}
+          onClick={get_geolocation}
+        >Get Coordinates from Geolocation</button>
       </div>
       <div className='box-destination'>
         <div className='box-latitude'>

@@ -4,13 +4,15 @@ import { custom_alert_for_slug_select } from "../utils/alert"
 import { useAtom } from 'jotai'
 import { type Static_Venue_Data, type Dynamic_Venue_Data, type Distance_Range_Original } from '../utils/types'
 import { fetch_static_data, fetch_dynamic_data } from '../utils/fetch_data'
-import { static_data_atom, dynamic_data_atom } from '../utils/atoms'
+import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../utils/atoms'
 
 const VenueSlugSelector: React.FC = () => {
+  const [, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
   const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
-  const inputRef = useRef<HTMLInputElement>(null)
-  // Dummy fetch venue slug tails, as cities
+  const input_ref = useRef<HTMLInputElement>(null)
+  
+  /** Dummy fetch venue slug tails, as cities */
   const fetch_slug_tails = (): string[] => {
       // Simulated local JSON string
       const json_string = '["Helsinki", "Tallinn"]'
@@ -38,6 +40,7 @@ const VenueSlugSelector: React.FC = () => {
     custom_alert_for_slug_select(e)
 
     if (slug_tail !== '') {
+      set_selected_slug(slug_tail)
       // Check if static data is already fetched
       if (!static_data_map.has(slug_tail)) {
         try {
@@ -71,7 +74,8 @@ const VenueSlugSelector: React.FC = () => {
       }
       
     } else {
-      set_dynamic_data_obj(null) //todo remove?
+      set_dynamic_data_obj(null)
+      set_selected_slug(null)
     }
   }
 
@@ -84,7 +88,7 @@ const VenueSlugSelector: React.FC = () => {
   // fill datalist when the component mounts, using slug_tails dummy data
   useEffect(() => {
     fill_datalist_tag()
-    if (inputRef.current) inputRef.current.focus()
+    if (input_ref.current) input_ref.current.focus()
   }, [])
 
   useEffect(() => {
@@ -97,7 +101,7 @@ const VenueSlugSelector: React.FC = () => {
 
   return (
     <div>
-      <label htmlFor='venue-slug'>Choose Venue Slug</label>
+      <label htmlFor='venue-slug'>Choose Venue Slug:</label>
       <input
         type='text'
         title='start typing and select'
@@ -107,7 +111,7 @@ const VenueSlugSelector: React.FC = () => {
         data-test-id='venue-slug-input' // Set data-test-id for testing
         onKeyUp={handle_key_up}
         onBlur={check_input_value}
-        ref={inputRef}
+        ref={input_ref}
       />
       <datalist id='venue-options' />
     </div>

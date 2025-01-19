@@ -8,7 +8,7 @@ const CartValue: React.FC = () => {
   const input_ref = useRef<HTMLInputElement>(null)
   const [cart_value, set_cart_value] = useAtom(cart_value_atom)
   
-  /** Regex for validating float input */
+  /** Validating float input, for EUR with cents */
   const currency_regex = /^(\d+)?(\.)?(\d{1,2})?$/
 
   const handle_input_change = (e: React.ChangeEvent<HTMLInputElement>) => {

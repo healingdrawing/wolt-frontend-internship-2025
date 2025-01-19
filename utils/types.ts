@@ -22,3 +22,12 @@ export interface Dynamic_Venue_Data {
   base_price: number
   distance_ranges: Distance_Range[]
 }
+
+export interface Delivery_Price_Result {
+  cart_value: string
+  small_order_surcharge: string
+  delivery_fee: string
+  delivery_distance: string
+  total_price: string
+  error?: string // todo consider display N/A for other fields when error fires
+}
