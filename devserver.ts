@@ -1,10 +1,25 @@
-/** dev server to manage local json data */
+import { dformat } from "./debug"
+
+const valid_api_endpoints = [
+  "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-helsinki/static",
+  "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-helsinki/dynamic",
+  "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-tallinn/static",
+  "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-tallinn/dynamic",
+]
+
+/** try to cut http://localhost... prefix */
+const trim_dev_prefix = (raw:string, prefix:string):string => raw.indexOf(server.url.toString()) === 0 ? raw.slice(prefix.length) : raw
+
+/** dev server to fetch data from external API */
 const server = Bun.serve({
   port: 5000,
   async fetch(req) {
-    const url = new URL(req.url)
-    console.log(url.pathname)
-    const filePath = `.${url.pathname}`
+
+    const endpoint = trim_dev_prefix(req.url, server.url.toString())
+    const url = new URL(endpoint)
+    console.log("url.pathname",url.pathname)
+    console.log("endpoint",endpoint)
+
 
     const headers = {
       "Access-Control-Allow-Origin": "*",
@@ -12,18 +27,38 @@ const server = Bun.serve({
       "Access-Control-Allow-Headers": "Content-Type",
     }
 
-    try {
-      const file = await Bun.file(filePath).json();
-      return new Response(JSON.stringify(file), {
-        headers: headers
-      })
-    } catch {
-      return new Response("File not found", { 
-        status: 404,
-        headers: headers
-      })
+    
+    
+    // Check if the request is for one of the API endpoints
+    if (valid_api_endpoints.includes(endpoint)) {
+      console.log(dformat("fetching data from dev api", endpoint))
+      try {
+        const apiResponse = await fetch(endpoint);
+        if (!apiResponse.ok) {
+          return new Response("Error fetching data from API", {
+            status: apiResponse.status,
+            headers: headers,
+          })
+        }
+        const data = await apiResponse.json();
+        return new Response(JSON.stringify(data), {
+          headers: headers,
+        })
+      } catch (error) {
+        console.error("Fetch error:", error);
+        return new Response("Error fetching data from API", {
+          status: 500,
+          headers: headers,
+        })
+      }
     }
+
+    // Handle 404 for other routes
+    return new Response("Not Found", {
+      status: 404,
+      headers: headers,
+    })
   },
 })
 
-console.log(`Listening on ${server.url}`)
+console.log(`Development Server Listening on ${server.url}`)
