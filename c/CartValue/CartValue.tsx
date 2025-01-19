@@ -1,8 +1,8 @@
 import React, { useRef } from 'react'
 import { useAtom } from 'jotai'
-import { cart_value_atom } from '../utils/atoms'
-import { custom_alert_for_float_input } from '../utils/alert'
-import { simulate_tab_event } from '../utils/tab'
+import { cart_value_atom } from '../../utils/atoms'
+import { custom_alert_for_float_input } from '../../utils/alert'
+import { simulate_tab_event } from '../../utils/tab'
 
 const CartValue: React.FC = () => {
   const input_ref = useRef<HTMLInputElement>(null)
@@ -40,6 +40,7 @@ const CartValue: React.FC = () => {
       <input
         type='text'
         id='cart-value'
+        data-test-id='cartValue'
         placeholder='Enter Cart Value'
         onChange={handle_input_change}
         onBlur={handle_input_on_blur}
