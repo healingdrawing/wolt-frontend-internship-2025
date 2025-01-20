@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'bun:test'
 import { render, fireEvent } from '@testing-library/react'
 import CartValue from './CartValue'
-import { createStore } from 'jotai'
 import { dformat } from '../../debug/debug'
 
-const store = createStore()
 
 interface Test_Set_Value_Case{
   raw_value: string
