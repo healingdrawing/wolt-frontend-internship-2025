@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { simulate_tab_event } from '../utils/tab'
 import { custom_alert_for_slug_select } from "../utils/alert"
 import { useAtom } from 'jotai'
@@ -10,6 +10,8 @@ const VenueSlugSelector: React.FC = () => {
   const [, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
   const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
+  const [static_data_fetched, set_static_data_fetched] = useState(false);
+  const [dynamic_data_fetched, set_dynamic_data_fetched] = useState(false);
   const input_ref = useRef<HTMLInputElement>(null)
   
   /** Dummy fetch venue slug tails, as cities */
@@ -31,14 +33,14 @@ const VenueSlugSelector: React.FC = () => {
     })
   }
 
-  const check_input_value = async (e: React.FocusEvent<HTMLInputElement>) => {
+  const check_input_value = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter' || e.currentTarget.value === '') return
     const slug_tail = slug_tails.find(tail =>
-      tail.toLocaleLowerCase() === e.target.value.toLocaleLowerCase()
-    ) || '' 
-    
-    e.target.value = slug_tail
+      tail.toLocaleLowerCase() === e.currentTarget.value.toLocaleLowerCase()
+    ) || ''
+    e.currentTarget.value = slug_tail
     custom_alert_for_slug_select(e)
-
+    
     if (slug_tail !== '') {
       set_selected_slug(slug_tail)
       // Check if static data is already fetched
@@ -50,10 +52,13 @@ const VenueSlugSelector: React.FC = () => {
           const remap = new Map(static_data_map)
           remap.set(slug_tail, staticData)
           set_static_data_map(remap)
+          set_static_data_fetched(true)
         } catch (error) {
-          console.error('Error fetching static data:', error)
+          console.log('Error fetching static data:', error)
+          set_static_data_fetched(false)
+          if (input_ref.current) input_ref.current.value = ''
         }
-      }
+      } else set_static_data_fetched(true)
 
       try {
         const raw = await fetch_dynamic_data(slug_tail)
@@ -69,20 +74,21 @@ const VenueSlugSelector: React.FC = () => {
           distance_ranges
         }
         set_dynamic_data_obj(dynamic_data)
+        set_dynamic_data_fetched(true)
       } catch (error) {
         console.error('Error fetching dynamic data:', error)
+        set_dynamic_data_fetched(false)
       }
-      
     } else {
-      set_dynamic_data_obj(null)
       set_selected_slug(null)
+      set_dynamic_data_obj(null)
+      set_static_data_fetched(false)
+      set_dynamic_data_fetched(false)
     }
   }
 
-  const handle_key_up = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      simulate_tab_event(e.currentTarget)
-    }
+  const handle_jump = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!static_data_map.has(e.target.value)) e.target.focus()
   }
 
   // fill datalist when the component mounts, using slug_tails dummy data
@@ -90,6 +96,16 @@ const VenueSlugSelector: React.FC = () => {
     fill_datalist_tag()
     if (input_ref.current) input_ref.current.focus()
   }, [])
+
+  useEffect(() => {
+    if (static_data_fetched && dynamic_data_fetched) {
+      console.log("BOTH FETCHED WITHOUT CORS X)")
+      const current_element: HTMLElement | null = input_ref.current
+      if (current_element) simulate_tab_event(current_element)
+      set_static_data_fetched(false)
+      set_dynamic_data_fetched(false)
+    }
+  }, [static_data_fetched, dynamic_data_fetched]);
 
   useEffect(() => {
     console.log("Current static data map:", static_data_map)
@@ -109,8 +125,8 @@ const VenueSlugSelector: React.FC = () => {
         list='venue-options'
         placeholder='Start typing...'
         data-test-id='venue-slug-input' // Set data-test-id for testing
-        onKeyUp={handle_key_up}
-        onBlur={check_input_value}
+        onKeyUp={check_input_value}
+        onBlur={handle_jump}
         ref={input_ref}
       />
       <datalist id='venue-options' />

@@ -7,7 +7,7 @@ To run builded version, use vscode live server extension
 https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 
 ### Run steps:
-- install bun runtime https://bun.sh  
+- install bun runtime https://bun.sh (`version v1.1.45 (196621f2)` used for development)  
 - install vscode https://code.visualstudio.com  
 - install vscode live server extension https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer  
 - clone the repo  

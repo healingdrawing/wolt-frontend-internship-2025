@@ -29,5 +29,5 @@ export interface Delivery_Price_Result {
   delivery_fee: string
   delivery_distance: string
   total_price: string
-  error?: string // todo consider display N/A for other fields when error fires
+  error?: string
 }

@@ -5,11 +5,24 @@ export const fetch_static_data = async (slug: string): Promise<any> => {
   `https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-${safe_slug}/static`
   :`http://localhost:5000/https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-${safe_slug}/static`
 
-  const response = await fetch(url)
-  
-  if (!response.ok) throw new Error('Failed to fetch static data')
-  
-  return response.json()
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      alert('An error occurred while fetching static data.\nPlease try again later or contact support.\n\n'+ error.toString())
+    } else {
+      alert('Fetching static data: An unexpected error occurred. Please try again later.')
+    }
+
+    throw error
+  }
 }
 
 export const fetch_dynamic_data = async (slug: string): Promise<any> => {
@@ -18,9 +31,22 @@ export const fetch_dynamic_data = async (slug: string): Promise<any> => {
   `https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-${safe_slug}/dynamic`
   :`http://localhost:5000/https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-${safe_slug}/dynamic`
 
-  const response = await fetch(url)
-  if (!response.ok) throw new Error('Failed to fetch dynamic data')
-  const json = await response.json()
-  console.log(json, "dynamic json")
-  return json
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorMessage = `Error: ${response.status} - ${response.statusText}`;
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      alert('An error occurred while fetching dynamic data.\nPlease try again later or contact support.\n\n'+ error.toString())
+    } else {
+      alert('Fetching dynamic data: An unexpected error occurred. Please try again later.')
+    }
+
+    throw error
+  }
 }

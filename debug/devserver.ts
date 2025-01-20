@@ -7,7 +7,7 @@ const valid_api_endpoints = [
   "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/home-assignment-venue-tallinn/dynamic",
 ]
 
-/** try to cut http://localhost... prefix */
+/** try tocut http://localhost... prefix */
 const trim_dev_prefix = (raw:string, prefix:string):string => raw.indexOf(server.url.toString()) === 0 ? raw.slice(prefix.length) : raw
 
 /** dev server to fetch data from external API */
@@ -19,7 +19,6 @@ const server = Bun.serve({
     const url = new URL(endpoint)
     console.log("url.pathname",url.pathname)
     console.log("endpoint",endpoint)
-
 
     const headers = {
       "Access-Control-Allow-Origin": "*",
@@ -45,7 +44,7 @@ const server = Bun.serve({
           headers: headers,
         })
       } catch (error) {
-        console.error("Fetch error:", error);
+        console.error("Development server fetch error:", error);
         return new Response("Error fetching data from API", {
           status: 500,
           headers: headers,
