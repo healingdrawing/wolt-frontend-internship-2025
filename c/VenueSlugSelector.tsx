@@ -33,52 +33,65 @@ const VenueSlugSelector: React.FC = () => {
     })
   }
 
+  const check_slug = (slug:string) => slug_tails.find(tail =>
+    tail.toLocaleLowerCase() === slug.toLocaleLowerCase()
+  ) || ''
+
+  /** set @param danger true, to extra check the value of @param raw_slug_tail */
+  const fetch_data = async (raw_slug_tail:string, danger:boolean = false) => {
+    const slug_tail = danger?check_slug(raw_slug_tail):raw_slug_tail
+    if (slug_tail === '') return
+
+    // Check if static data is already fetched
+    if (!static_data_map.has(slug_tail)) {
+      try {
+        const raw = await fetch_static_data(slug_tail)
+        const coordinates = raw.venue_raw.location.coordinates
+        const staticData: Static_Venue_Data = { coordinates }
+        const remap = new Map(static_data_map)
+        remap.set(slug_tail, staticData)
+        set_static_data_map(remap)
+        set_static_data_fetched(true)
+      } catch (error) {
+        console.log('Error fetching static data:', error)
+        set_static_data_fetched(false)
+        if (input_ref.current) input_ref.current.value = ''
+      }
+    } else set_static_data_fetched(true)
+
+    if (dynamic_data_fetched) return
+    try {
+      const raw = await fetch_dynamic_data(slug_tail)
+      const order_minimum_no_surcharge = raw.venue_raw.delivery_specs.order_minimum_no_surcharge
+      const base_price = raw.venue_raw.delivery_specs.delivery_pricing.base_price
+      const distance_ranges = raw.venue_raw.delivery_specs.delivery_pricing.distance_ranges.map((item: Distance_Range_Original) => {
+        const { flag, ...rest } = item
+        return rest
+      })
+
+      const dynamic_data:Dynamic_Venue_Data = {
+        order_minimum_no_surcharge, base_price,
+        distance_ranges
+      }
+      set_dynamic_data_obj(dynamic_data)
+      set_dynamic_data_fetched(true)
+    } catch (error) {
+      console.error('Error fetching dynamic data:', error)
+      //todo yes, it is not perfect(not needed), but it is not a time for adventures
+      set_dynamic_data_fetched(false)
+    }
+  }
+
   const check_input_value = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || e.currentTarget.value === '') return
-    const slug_tail = slug_tails.find(tail =>
-      tail.toLocaleLowerCase() === e.currentTarget.value.toLocaleLowerCase()
-    ) || ''
+    const slug_tail = check_slug(e.currentTarget.value)
+    
     e.currentTarget.value = slug_tail
     custom_alert_for_slug_select(e)
     
     if (slug_tail !== '') {
       set_selected_slug(slug_tail)
-      // Check if static data is already fetched
-      if (!static_data_map.has(slug_tail)) {
-        try {
-          const raw = await fetch_static_data(slug_tail)
-          const coordinates = raw.venue_raw.location.coordinates
-          const staticData: Static_Venue_Data = { coordinates }
-          const remap = new Map(static_data_map)
-          remap.set(slug_tail, staticData)
-          set_static_data_map(remap)
-          set_static_data_fetched(true)
-        } catch (error) {
-          console.log('Error fetching static data:', error)
-          set_static_data_fetched(false)
-          if (input_ref.current) input_ref.current.value = ''
-        }
-      } else set_static_data_fetched(true)
-
-      try {
-        const raw = await fetch_dynamic_data(slug_tail)
-        const order_minimum_no_surcharge = raw.venue_raw.delivery_specs.order_minimum_no_surcharge
-        const base_price = raw.venue_raw.delivery_specs.delivery_pricing.base_price
-        const distance_ranges = raw.venue_raw.delivery_specs.delivery_pricing.distance_ranges.map((item: Distance_Range_Original) => {
-          const { flag, ...rest } = item
-          return rest
-        })
-
-        const dynamic_data:Dynamic_Venue_Data = {
-          order_minimum_no_surcharge, base_price,
-          distance_ranges
-        }
-        set_dynamic_data_obj(dynamic_data)
-        set_dynamic_data_fetched(true)
-      } catch (error) {
-        console.error('Error fetching dynamic data:', error)
-        set_dynamic_data_fetched(false)
-      }
+      await fetch_data(slug_tail)
     } else {
       set_selected_slug(null)
       set_dynamic_data_obj(null)
@@ -93,12 +106,13 @@ const VenueSlugSelector: React.FC = () => {
     set_dynamic_data_fetched(false)
   }
 
-  const handle_jump = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handle_jump = async (e: React.FocusEvent<HTMLInputElement>) => {
     if (
       !static_data_map.has(e.target.value)
       || !dynamic_data_fetched
     ){
       e.target.focus()
+      await fetch_data(e.target.value, true)
     }
   }
 
@@ -112,8 +126,8 @@ const VenueSlugSelector: React.FC = () => {
     if (static_data_fetched && dynamic_data_fetched) {
       const current_element: HTMLElement | null = input_ref.current
       if (current_element) simulate_tab_event(current_element)
-      set_static_data_fetched(false)
-      set_dynamic_data_fetched(false)
+      // set_static_data_fetched(false)
+      // set_dynamic_data_fetched(false)
     }
   }, [static_data_fetched, dynamic_data_fetched]);
 
