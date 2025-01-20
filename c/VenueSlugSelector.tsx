@@ -87,8 +87,19 @@ const VenueSlugSelector: React.FC = () => {
     }
   }
 
+  /** when user interacts with input, extra check needed, to prevent, jump without refetch dynamic data */
+  const require_fetch_data = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // set_static_data_fetched(false) // checked by key in map
+    set_dynamic_data_fetched(false)
+  }
+
   const handle_jump = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (!static_data_map.has(e.target.value)) e.target.focus()
+    if (
+      !static_data_map.has(e.target.value)
+      || !dynamic_data_fetched
+    ){
+      e.target.focus()
+    }
   }
 
   // fill datalist when the component mounts, using slug_tails dummy data
@@ -99,7 +110,6 @@ const VenueSlugSelector: React.FC = () => {
 
   useEffect(() => {
     if (static_data_fetched && dynamic_data_fetched) {
-      console.log("BOTH FETCHED WITHOUT CORS X)")
       const current_element: HTMLElement | null = input_ref.current
       if (current_element) simulate_tab_event(current_element)
       set_static_data_fetched(false)
@@ -125,6 +135,7 @@ const VenueSlugSelector: React.FC = () => {
         list='venue-options'
         placeholder='Start typing...'
         data-test-id='venue-slug-input' // Set data-test-id for testing
+        onChange={require_fetch_data}
         onKeyUp={check_input_value}
         onBlur={handle_jump}
         ref={input_ref}
