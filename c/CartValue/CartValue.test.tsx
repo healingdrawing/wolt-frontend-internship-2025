@@ -2,6 +2,7 @@ import { describe, it, expect } from 'bun:test'
 import { render, fireEvent } from '@testing-library/react'
 import CartValue from './CartValue'
 import { createStore } from 'jotai'
+import { dformat } from '../../debug/debug'
 
 const store = createStore()
 
@@ -27,6 +28,7 @@ const testing_data:Test_Set_Value_Case[] = [
 ]
 
 describe('CartValue Component', () => {
+  console.log(dformat("CartValue.tsx testing", "CartValue.test.tsx"))
   it('renders input with data-test-id', () => {
     const { container } = render(
       <CartValue />
@@ -49,14 +51,14 @@ describe('CartValue Component', () => {
   })
 
   testing_data.forEach(({ raw_value, the_same }) => {
-    it(`updates cart value to ${raw_value} on input change and expect ${the_same?'the same value':'changed value'}`, () => {
+    it(`Format/regex test: updates input cart value to ${raw_value} and expect ${the_same?'the same value':'changed value'}`, () => {
       const { container } = render(
         <CartValue />
       )
 
       const inputElement = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement;
       fireEvent.change(inputElement, { target: { value: raw_value } })
-      console.log(raw_value, '=>', inputElement.value)
+      console.log("---\n",raw_value, '=>', inputElement.value)
 
       if (the_same) expect(inputElement.value).toBe(raw_value)
       else expect(inputElement.value).not.toBe(raw_value)

@@ -4,6 +4,7 @@ import { user_coordinates_atom } from '../utils/atoms'
 import { custom_alert_for_float_input } from '../utils/alert'
 import { simulate_tab_event } from '../utils/tab'
 import { isDesktop } from 'react-device-detect'
+import { dformat } from '../debug/debug'
 
 
 const UserCoordinates: React.FC = () => {
@@ -15,16 +16,17 @@ const UserCoordinates: React.FC = () => {
   /** Regex for validating coordinates during input and so */
   const minus_numbers_period_regex = /^-?(\d+)?(\.)?(\d+)?$/
   /** to allow input, without black magic. -.5 etc */
-  const wait_list = ['.','-','-.','.-']
+  const wait_list = ['.','-','-.']
 
-  /** refresh and check both at once on screen, since it is used after geo/ip only */
+  /** refresh and check both at once on screen, used after geo/ip also*/
   const refresh_location_inputs = () => {
     if (
       input_latitude_ref.current && coordinates.latitude
       && input_longitude_ref.current && coordinates.longitude
     ) {
-      input_latitude_ref.current.value = coordinates.latitude.toString()
-      input_longitude_ref.current.value = coordinates.longitude.toString()
+      input_latitude_ref.current.value = coordinates.latitude
+      input_longitude_ref.current.value = coordinates.longitude
+      console.log(dformat("coordinates refreshed"))
     } else {
       console.error("fetch location from geo/ip error",input_latitude_ref, input_longitude_ref,coordinates)
     }
@@ -74,7 +76,7 @@ const UserCoordinates: React.FC = () => {
     try {
       const response = await fetch('https://ipapi.co/json/')
 
-      // check (status 200-299) and hide button otherwise
+      // check to disable button
       if (!response.ok) {
         set_is_ip_location_disabled(true)
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -92,7 +94,7 @@ const UserCoordinates: React.FC = () => {
         throw new Error('Latitude and longitude not found in the response.')
       }
     } catch (error) {
-      console.error('Error fetching coordinates:', error)
+      console.error('Error fetching coordinates from IP:', error)
       set_is_ip_location_disabled(true)
     }
   }
@@ -120,20 +122,18 @@ const UserCoordinates: React.FC = () => {
   const handle_input_on_blur = (e: React.FocusEvent<HTMLInputElement>, type: 'latitude' | 'longitude') => {
     const value = e.target.value
     if (minus_numbers_period_regex.test(value) && value !== '') {
-      if (type === 'latitude') {
-        if (!wait_list.includes(value)) set_coordinates((prev) => ({ ...prev, latitude: value === '' ? null: value}))
-        else { e.currentTarget.focus() }
-        e.target.value = coordinates.latitude === null ? '' : coordinates.latitude.toString()
-      } else {
-        if (!wait_list.includes(value)) set_coordinates((prev) => ({ ...prev, longitude: value === '' ? null: value}))
-        else custom_alert_for_float_input(e)
-        e.target.value = coordinates.longitude === null ? '' : coordinates.longitude.toString()
-      }
+      if (!wait_list.includes(value)){
+        if (type === 'latitude') {
+          set_coordinates((prev) => ({ ...prev, latitude: value}))
+        } else {
+          set_coordinates((prev) => ({ ...prev, longitude: value}))
+        }
+      } else e.currentTarget.focus()
     } else {
       e.target.value = ''
       custom_alert_for_float_input(e)
     }
-  };
+  }
 
   const handle_key_up = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
