@@ -18,8 +18,8 @@ const DeliveryPrice: React.FC = () => {
     if (slug && static_data.has(slug)
       && dynamic_data_atom !== null
       && cart_value !== null
-      && user_coordinates.latitude !== null
-      && user_coordinates.longitude !== null
+      && user_coordinates.latitude !== ''
+      && user_coordinates.longitude !== ''
     ) {
       const slug_static_data = static_data.get(slug) !== undefined?static_data.get(slug):null
       if (!slug_static_data || !dynamic_data) return

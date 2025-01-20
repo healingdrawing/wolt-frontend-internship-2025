@@ -11,24 +11,25 @@ const UserCoordinates: React.FC = () => {
   const input_latitude_ref = useRef<HTMLInputElement>(null) //geo/ip -> value
   const input_longitude_ref = useRef<HTMLInputElement>(null)
   const [coordinates, set_coordinates] = useAtom(user_coordinates_atom)
+  const set_latitude = (value:string) => set_coordinates((prev) => ({ ...prev, latitude: value}))
+  const set_longitude = (value:string) => set_coordinates((prev) => ({ ...prev, longitude: value}))
   const [is_geolocation_disabled, set_is_geolocation_disabled] = useState(false)
   const [is_ip_location_disabled, set_is_ip_location_disabled] = useState(false)
-  /** Regex for validating coordinates during input and so */
-  const minus_numbers_period_regex = /^-?(\d+)?(\.)?(\d+)?$/
+  /** Regex for validating coordinates during input and so. allows non-mandatory: minus, period, digits */
+  const number_regex = /^-?(\d+)?(\.)?(\d+)?$/
   /** to allow input, without black magic. -.5 etc */
-  const wait_list = ['.','-','-.']
+  const wait_list = ['','.','-','-.']
 
-  /** refresh and check both at once on screen, used after geo/ip also*/
-  const refresh_location_inputs = () => {
-    if (
-      input_latitude_ref.current && coordinates.latitude
-      && input_longitude_ref.current && coordinates.longitude
-    ) {
+  /** refresh on screen */
+  const refresh_inputs = () => {
+    if (input_latitude_ref.current && coordinates.latitude) {
       input_latitude_ref.current.value = coordinates.latitude
+      console.log(dformat("latitude refreshed"))
+    }
+
+    if (input_longitude_ref.current && coordinates.longitude) {
       input_longitude_ref.current.value = coordinates.longitude
-      console.log(dformat("coordinates refreshed"))
-    } else {
-      console.error("fetch location from geo/ip error",input_latitude_ref, input_longitude_ref,coordinates)
+      console.log(dformat("longitude refreshed"))
     }
   }
 
@@ -102,37 +103,20 @@ const UserCoordinates: React.FC = () => {
   // handle manually the input change but update atom on blur
   const handle_input_change = (e: React.ChangeEvent<HTMLInputElement>, type: 'latitude' | 'longitude') => {
     const value = e.target.value
-    if (minus_numbers_period_regex.test(value) || value === '') {
-      if (!wait_list.includes(value)){
-        if (type === 'latitude') {
-          set_coordinates((prev) => ({ ...prev, latitude: value === '' ? null: value}))
-        } else {
-          set_coordinates((prev) => ({ ...prev, longitude: value === '' ? null: value}))
-        }
-      }
+    if (wait_list.includes(value)) return
+    if (number_regex.test(value)) {
+      (type === 'latitude') ? set_latitude(value) : set_longitude(value)
     } else {
-      if (type === 'latitude') {
-        e.target.value = coordinates.latitude === null ? '' : coordinates.latitude.toString()
-      } else {
-        e.target.value = coordinates.longitude === null ? '' : coordinates.longitude.toString()
-      }
+      (type === 'latitude') ? e.target.value = coordinates.latitude
+      : e.target.value = coordinates.longitude
     }
   }
 
   const handle_input_on_blur = (e: React.FocusEvent<HTMLInputElement>, type: 'latitude' | 'longitude') => {
     const value = e.target.value
-    if (minus_numbers_period_regex.test(value) && value !== '') {
-      if (!wait_list.includes(value)){
-        if (type === 'latitude') {
-          set_coordinates((prev) => ({ ...prev, latitude: value}))
-        } else {
-          set_coordinates((prev) => ({ ...prev, longitude: value}))
-        }
-      } else e.currentTarget.focus()
-    } else {
-      e.target.value = ''
-      custom_alert_for_float_input(e)
-    }
+
+    if (wait_list.includes(value)) type === 'latitude' ? set_latitude('0') : set_longitude('0')
+    else if (number_regex.test(value)) type === 'latitude' ? set_latitude(value) : set_longitude(value)
   }
 
   const handle_key_up = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -141,11 +125,7 @@ const UserCoordinates: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (coordinates.latitude !== null && coordinates.longitude !== null) {
-      refresh_location_inputs()
-    }
-  }, [coordinates])
+  useEffect(() =>  refresh_inputs() , [coordinates])
 
   return (
     <div>
@@ -157,7 +137,10 @@ const UserCoordinates: React.FC = () => {
           onClick={get_coordinates_from_ip}
         >Get Coordinates from IP</button>
           <button
-          className={isDesktop ? 'hide-on-desktop' : ''}
+            id='location-from-ip'
+            data-test-id='getLocation'
+            data-raw-value='N/A'
+            className={isDesktop ? 'hide-on-desktop' : ''}
             title={!navigator.geolocation || is_geolocation_disabled ? 'N/A' : ''}
             disabled={!navigator.geolocation || is_geolocation_disabled}
             onClick={get_geolocation}
@@ -170,8 +153,10 @@ const UserCoordinates: React.FC = () => {
             type='text'
             title='float or integer number'
             id='destination-latitude'
+            data-test-id='userLatitude'
+            data-raw-value={coordinates.latitude !== null ? coordinates.latitude : ''}
             placeholder='Enter Latitude'
-            pattern={minus_numbers_period_regex.source}
+            pattern={number_regex.source}
             onChange={(e) => handle_input_change(e, 'latitude')}
             onBlur={(e) => handle_input_on_blur(e, 'latitude')}
             onKeyUp={(e) => handle_key_up(e)}
@@ -185,6 +170,8 @@ const UserCoordinates: React.FC = () => {
             type='text'
             title='float or integer number'
             id='destination-longitude'
+            data-test-id='userLongitude'
+            data-raw-value={coordinates.longitude !== null ? coordinates.longitude : ''}
             placeholder='Enter Longitude'
             onChange={(e) => handle_input_change(e, 'longitude')}
             onBlur={(e) => handle_input_on_blur(e, 'longitude')}

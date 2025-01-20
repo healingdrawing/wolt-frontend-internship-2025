@@ -12,9 +12,9 @@ export const dynamic_data_atom = atom<Dynamic_Venue_Data | null>(null)
 
 /** user latitude and longitude */
 export const user_coordinates_atom =
-atom<{ latitude: string | null; longitude: string | null }>({
-  latitude: null,
-  longitude: null,
+atom<{ latitude: string; longitude: string }>({
+  latitude: '',
+  longitude: '',
 })
 
 export const cart_value_atom = atom<number | null>(null)
