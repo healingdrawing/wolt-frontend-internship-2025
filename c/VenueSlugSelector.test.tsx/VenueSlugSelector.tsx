@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { simulate_tab_event } from '../utils/tab'
-import { custom_alert_for_slug_select } from "../utils/alert"
+import { simulate_tab_event } from '../../utils/tab'
+import { custom_alert_for_slug_select } from "../../utils/alert"
 import { useAtom } from 'jotai'
-import { type Static_Venue_Data, type Dynamic_Venue_Data, type Distance_Range_Original } from '../utils/types'
-import { fetch_static_data, fetch_dynamic_data } from '../utils/fetch_data'
-import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../utils/atoms'
+import { type Static_Venue_Data, type Dynamic_Venue_Data, type Distance_Range_Original } from '../../utils/types'
+import { fetch_static_data, fetch_dynamic_data } from '../../utils/fetch_data'
+import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../../utils/atoms'
 
 const VenueSlugSelector: React.FC = () => {
   const [, set_selected_slug] = useAtom(selected_slug_atom)
@@ -126,8 +126,6 @@ const VenueSlugSelector: React.FC = () => {
     if (static_data_fetched && dynamic_data_fetched) {
       const current_element: HTMLElement | null = input_ref.current
       if (current_element) simulate_tab_event(current_element)
-      // set_static_data_fetched(false)
-      // set_dynamic_data_fetched(false)
     }
   }, [static_data_fetched, dynamic_data_fetched]);
 
@@ -154,7 +152,7 @@ const VenueSlugSelector: React.FC = () => {
         onBlur={handle_jump}
         ref={input_ref}
       />
-      <datalist id='venue-options' />
+      <datalist id='venue-options' data-test-id='venue-slug-input-list' />
     </div>
   )
 }

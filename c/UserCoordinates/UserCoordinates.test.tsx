@@ -12,7 +12,7 @@ interface Test_Set_Value_Case{
 /** test case to check input */
 const tcase = (
   input:string, // new value
-  the_same:boolean // the expected result after filtering is same as input
+  the_same:boolean // the expected result after filtering is the same as input
 ):Test_Set_Value_Case => ({raw_value: input, the_same})
 
 const testing_data:Test_Set_Value_Case[] = [
@@ -32,7 +32,6 @@ describe('UserCoordinates Component', () => {
       <UserCoordinates />
     )
 
-    // Check if the input elements are rendered with the correct data-test-id
     const input_element_latitude = container.querySelector('[data-test-id="userLatitude"]') as HTMLInputElement
     expect(input_element_latitude).toBeDefined()
 
