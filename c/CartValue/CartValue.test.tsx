@@ -26,15 +26,15 @@ const testing_data:Test_Set_Value_Case[] = [
 ]
 
 describe('CartValue Component', () => {
-  console.log(dformat("CartValue.tsx testing", "CartValue.test.tsx"))
+  console.log(dformat('CartValue.tsx testing', 'CartValue.test.tsx'))
   it('renders input with data-test-id', () => {
     const { container } = render(
       <CartValue />
     )
 
     // Check if the input element is rendered with the correct data-test-id
-    const inputElement = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement
-    expect(inputElement).toBeDefined()
+    const input_element = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement
+    expect(input_element).toBeDefined()
   })
 
   it('check default cart value is empty', () => {
@@ -42,10 +42,10 @@ describe('CartValue Component', () => {
       <CartValue />
     )
 
-    const inputElement = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement;
-    inputElement.dispatchEvent(new Event('input'))
+    const input_element = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement;
+    input_element.dispatchEvent(new Event('input'))
 
-    expect(inputElement.value).toBe('')
+    expect(input_element.value).toBe('')
   })
 
   testing_data.forEach(({ raw_value, the_same }) => {
@@ -54,12 +54,12 @@ describe('CartValue Component', () => {
         <CartValue />
       )
 
-      const inputElement = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement;
-      fireEvent.change(inputElement, { target: { value: raw_value } })
-      console.log("---\n",raw_value, '=>', inputElement.value)
+      const input_element = container.querySelector('[data-test-id="cartValue"]') as HTMLInputElement
+      fireEvent.change(input_element, { target: { value: raw_value } })
+      console.log('---\n',raw_value, '=>', input_element.value)
 
-      if (the_same) expect(inputElement.value).toBe(raw_value)
-      else expect(inputElement.value).not.toBe(raw_value)
+      if (the_same) expect(input_element.value).toBe(raw_value)
+      else expect(input_element.value).not.toBe(raw_value)
       // fireEvent.change(inputElement, { target: { value: '' } }) // commented, to follow real implementation with auto format and backup input value in case of bad input
     })
   })

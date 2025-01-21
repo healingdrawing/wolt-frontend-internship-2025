@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { user_coordinates_atom } from '../utils/atoms'
-import { custom_alert_for_float_input } from '../utils/alert'
-import { simulate_tab_event } from '../utils/tab'
+import { user_coordinates_atom } from '../../utils/atoms'
+import { simulate_tab_event } from '../../utils/tab'
 import { isDesktop } from 'react-device-detect'
-import { dformat } from '../debug/debug'
+import { dformat } from '../../debug/debug'
 
 
 const UserCoordinates: React.FC = () => {
@@ -24,12 +23,12 @@ const UserCoordinates: React.FC = () => {
   const refresh_inputs = () => {
     if (input_latitude_ref.current && coordinates.latitude) {
       input_latitude_ref.current.value = coordinates.latitude
-      console.log(dformat("latitude refreshed"))
+      // console.log(dformat("latitude refreshed"))
     }
 
     if (input_longitude_ref.current && coordinates.longitude) {
       input_longitude_ref.current.value = coordinates.longitude
-      console.log(dformat("longitude refreshed"))
+      // console.log(dformat("longitude refreshed"))
     }
   }
 
