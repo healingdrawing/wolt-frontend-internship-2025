@@ -153,7 +153,7 @@ const UserCoordinates: React.FC = () => {
             title='float or integer number'
             id='destination-latitude'
             data-test-id='userLatitude'
-            data-raw-value={coordinates.latitude !== null ? coordinates.latitude : ''}
+            data-raw-value={coordinates.latitude}
             placeholder='Enter Latitude'
             pattern={number_regex.source}
             onChange={(e) => handle_input_change(e, 'latitude')}
@@ -170,7 +170,7 @@ const UserCoordinates: React.FC = () => {
             title='float or integer number'
             id='destination-longitude'
             data-test-id='userLongitude'
-            data-raw-value={coordinates.longitude !== null ? coordinates.longitude : ''}
+            data-raw-value={coordinates.longitude}
             placeholder='Enter Longitude'
             onChange={(e) => handle_input_change(e, 'longitude')}
             onBlur={(e) => handle_input_on_blur(e, 'longitude')}
