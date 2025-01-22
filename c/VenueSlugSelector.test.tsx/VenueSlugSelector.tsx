@@ -143,7 +143,7 @@ const VenueSlugSelector: React.FC = () => {
         data-test-id='venueSlug'
         data-raw-value={input_value}
         title='Start typing and select'
-        placeholder='Start typing the venue slug'
+        placeholder='Type or select venue slug'
         list='venue-options'
         onChange={require_fetch_data}
         onKeyUp={check_input_value}
