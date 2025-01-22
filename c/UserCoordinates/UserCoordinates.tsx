@@ -11,9 +11,9 @@ const UserCoordinates: React.FC = () => {
   const [coordinates, set_coordinates] = useAtom(user_coordinates_atom)
   const set_latitude = (value:string) => set_coordinates((prev) => ({ ...prev, latitude: value}))
   const set_longitude = (value:string) => set_coordinates((prev) => ({ ...prev, longitude: value}))
-  const [is_geolocation_disabled, set_is_geolocation_disabled] = useState(false)
-  const [is_ip_location_disabled, set_is_ip_location_disabled] = useState(false)
-  /** Regex for validating coordinates during input and so. allows non-mandatory: minus, period, digits */
+  const [show_geo, set_show_geo] = useState(!isDesktop)
+  const [show_ip, set_show_ip] = useState(true)
+  /** Regex to validate coordinates during input and so. allows non-mandatory: minus, period, digits */
   const number_regex = /^-?(\d+)?(\.)?(\d+)?$/
   /** to allow input, without black magic. -.5 etc */
   const wait_list = ['','.','-','-.']
@@ -42,7 +42,7 @@ const UserCoordinates: React.FC = () => {
           })
         },
         (error) => {
-          set_is_geolocation_disabled(true)
+          set_show_geo(false)
           switch (error.code) {
             case error.PERMISSION_DENIED:
               console.error('Geolocation: User denied the request.')
@@ -64,7 +64,7 @@ const UserCoordinates: React.FC = () => {
         }
       )
     } else {
-      set_is_geolocation_disabled(true)
+      set_show_geo(false)
       console.error('Geolocation is not supported by this browser.')
       alert('Geolocation is not supported by this browser.')
     }
@@ -77,7 +77,6 @@ const UserCoordinates: React.FC = () => {
 
       // check to disable button
       if (!response.ok) {
-        set_is_ip_location_disabled(true)
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
@@ -89,12 +88,11 @@ const UserCoordinates: React.FC = () => {
           longitude: data.longitude,
         })
       } else {
-        set_is_ip_location_disabled(true)
         throw new Error('Latitude and longitude not found in the response.')
       }
     } catch (error) {
+      set_show_ip(false)
       console.error('Error fetching coordinates from IP:', error)
-      set_is_ip_location_disabled(true)
     }
   }
 
@@ -131,18 +129,16 @@ const UserCoordinates: React.FC = () => {
       <h2>Customer Coordinates</h2>
 
       <button
-        title={is_ip_location_disabled ? 'N/A' : ''}
-        disabled={is_ip_location_disabled}
+        data-test-id='getLocation'
+        data-raw-value='N/A'
+        className={!show_ip ? 'hide' : ''}
+        disabled={!show_ip}
         onClick={get_coordinates_from_ip}
       >Get Coordinates from IP</button>
       
       <button
-        id='location-from-ip'
-        data-test-id='getLocation'
-        data-raw-value='N/A'
-        className={isDesktop ? 'hide-on-desktop' : ''}
-        title={!navigator.geolocation || is_geolocation_disabled ? 'N/A' : ''}
-        disabled={!navigator.geolocation || is_geolocation_disabled}
+        className={!show_geo ? 'hide' : ''}
+        disabled={!show_geo}
         onClick={get_geolocation}
       >Get Coordinates from Geolocation</button>
       
