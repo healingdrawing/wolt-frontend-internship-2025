@@ -7,13 +7,14 @@ import { fetch_static_data, fetch_dynamic_data } from '../../utils/fetch_data'
 import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../../utils/atoms'
 
 const VenueSlugSelector: React.FC = () => {
+  const input_ref = useRef<HTMLInputElement>(null)
   const [, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
   const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom) //keep for dev monitoring
   const [static_data_fetched, set_static_data_fetched] = useState(false)
   const [dynamic_data_fetched, set_dynamic_data_fetched] = useState(false)
   const [input_value, set_input_value] = useState('')
-  const input_ref = useRef<HTMLInputElement>(null)
+  const [fetching, set_fetching] = useState(false)
   
   /** Dummy fetch venue slug tails, as cities */
   const fetch_slug_tails = (): string[] => {
@@ -39,10 +40,13 @@ const VenueSlugSelector: React.FC = () => {
 
   /** set @param danger true, to extra check the value of @param raw_slug_tail */
   const fetch_data = async (raw_slug_tail:string, danger:boolean = false) => {
+    if (fetching) return
+    
     const slug_tail = danger?check_slug(raw_slug_tail):raw_slug_tail
     if (slug_tail === '') return
 
     if (!static_data_map.has(slug_tail)) {
+      set_fetching(true)
       try {
         const raw = await fetch_static_data(slug_tail)
         const coordinates = raw.venue_raw.location.coordinates
@@ -52,13 +56,17 @@ const VenueSlugSelector: React.FC = () => {
         set_static_data_map(remap)
         set_static_data_fetched(true)
       } catch (error) {
-        console.log('Error fetching static data:', error)
-        set_static_data_fetched(false)
         if (input_ref.current) input_ref.current.value = ''
+        set_static_data_fetched(false)
+        console.log('Error fetching static data:', error)
       }
     } else set_static_data_fetched(true)
 
-    if (dynamic_data_fetched) return
+    if (dynamic_data_fetched) {
+      set_fetching(false)
+      return
+    } else set_fetching(true)
+
     try {
       const raw = await fetch_dynamic_data(slug_tail)
       const order_minimum_no_surcharge = raw.venue_raw.delivery_specs.order_minimum_no_surcharge
@@ -75,8 +83,10 @@ const VenueSlugSelector: React.FC = () => {
       set_dynamic_data_obj(dynamic_data)
       set_dynamic_data_fetched(true)
     } catch (error) {
-      console.error('Error fetching dynamic data:', error)
       set_dynamic_data_fetched(false)
+      console.error('Error fetching dynamic data:', error)
+    } finally {
+      set_fetching(false)
     }
   }
 
@@ -126,7 +136,13 @@ const VenueSlugSelector: React.FC = () => {
       const current_element: HTMLElement | null = input_ref.current
       if (current_element) simulate_tab_event(current_element)
     }
-  }, [static_data_fetched, dynamic_data_fetched]);
+  }, [static_data_fetched, dynamic_data_fetched])
+
+  useEffect(() => { // to manage case when input disabled, but refocus again when input enabled + need fetch
+    if ( input_ref.current && !fetching
+      && !(static_data_fetched && dynamic_data_fetched)
+    ) input_ref.current.focus()
+  }, [fetching])
 
   // uncomment for monitoring
   // useEffect(() => {
@@ -141,6 +157,7 @@ const VenueSlugSelector: React.FC = () => {
     <div>
       <input
         type='text'
+        disabled={fetching}
         data-test-id='venueSlug'
         data-raw-value={input_value}
         title='Start typing and select'
