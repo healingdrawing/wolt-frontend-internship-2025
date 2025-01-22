@@ -37,14 +37,14 @@ describe('VenueSlugSelector Component', () => {
   })
 
   it('renders the input and datalist', () => {
-    const { getByPlaceholderText, getByRole } = render(<VenueSlugSelector />)
-    expect(getByPlaceholderText('Start typing...')).toBeDefined()
+    const { getByPlaceholderText } = render(<VenueSlugSelector />)
+    expect(getByPlaceholderText('Start typing the venue slug')).toBeDefined()
     expect(document.getElementById('venue-slug-input-list')).toBeDefined()
   })
 
   it('fetches static data on input blur', async () => {
     const { getByPlaceholderText } = render(<VenueSlugSelector />)
-    const input = getByPlaceholderText('Start typing...') as HTMLInputElement
+    const input = getByPlaceholderText('Start typing the venue slug') as HTMLInputElement
 
     fireEvent.change(input, { target: { value: 'Helsinki' } })
     fireEvent.blur(input)
@@ -60,7 +60,7 @@ describe('VenueSlugSelector Component', () => {
 
   it('handles errors during static data fetching', async () => {
     const { getByPlaceholderText } = render(<VenueSlugSelector />)
-    const input = getByPlaceholderText('Start typing...') as HTMLInputElement
+    const input = getByPlaceholderText('Start typing the venue slug') as HTMLInputElement
 
     fireEvent.change(input, { target: { value: 'Helsinki' } })
     fireEvent.blur(input)
@@ -79,7 +79,7 @@ describe('VenueSlugSelector Component', () => {
 
   it('fetches dynamic data on Enter key press', async () => {
     const { getByPlaceholderText } = render(<VenueSlugSelector />)
-    const input = getByPlaceholderText('Start typing...') as HTMLInputElement
+    const input = getByPlaceholderText('Start typing the venue slug') as HTMLInputElement
 
     fireEvent.change(input, { target: { value: 'Helsinki' } })
     fireEvent.keyUp(input, { key: 'Enter' })
@@ -104,7 +104,7 @@ describe('VenueSlugSelector Component', () => {
 
   it('handles errors during dynamic data fetching', async () => {
     const { getByPlaceholderText } = render(<VenueSlugSelector />)
-    const input = getByPlaceholderText('Start typing...') as HTMLInputElement
+    const input = getByPlaceholderText('Start typing the venue slug') as HTMLInputElement
 
     fireEvent.change(input, { target: { value: 'Helsinki' } })
     fireEvent.keyUp(input, { key: 'Enter' })

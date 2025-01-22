@@ -7,8 +7,8 @@ const box = document.getElementById('react-content')
 if (box) {
   const root = createRoot(box)
   root.render(
-      <React.StrictMode> //todo hide. render duplicator for debug
+      // <React.StrictMode> //todo hide. render duplicator for debug
           <DOPCalc />
-      </React.StrictMode>
+      // </React.StrictMode>
   )
 }

@@ -22,7 +22,7 @@
     "react-dom": "^19.0.0"
   },
   "scripts": {
-    "build": "bun build src/index.tsx --outdir ./out --target=browser --experimental-css --env=inline",
-    "dev": "bun run debug/devserver.ts"
+    "build": "bun build src/index.tsx --outdir ./out --target=browser --experimental-css --experimental-html --env=inline",
+    "dev": "bun run build && bun run debug/devserver.ts"
   }
 }

@@ -9,9 +9,10 @@ import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../../u
 const VenueSlugSelector: React.FC = () => {
   const [, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
-  const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
-  const [static_data_fetched, set_static_data_fetched] = useState(false);
-  const [dynamic_data_fetched, set_dynamic_data_fetched] = useState(false);
+  const [, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
+  const [static_data_fetched, set_static_data_fetched] = useState(false)
+  const [dynamic_data_fetched, set_dynamic_data_fetched] = useState(false)
+  const [input_value, set_input_value] = useState('')
   const input_ref = useRef<HTMLInputElement>(null)
   
   /** Dummy fetch venue slug tails, as cities */
@@ -27,8 +28,7 @@ const VenueSlugSelector: React.FC = () => {
     
     slug_tails.forEach(tail => {
       const option = document.createElement('option')
-      option.value = tail // Set the value of the option
-      option.setAttribute('data-raw-value', tail) // Set data-raw-value for testing
+      option.value = tail
       datalist.appendChild(option)
     })
   }
@@ -42,7 +42,6 @@ const VenueSlugSelector: React.FC = () => {
     const slug_tail = danger?check_slug(raw_slug_tail):raw_slug_tail
     if (slug_tail === '') return
 
-    // Check if static data is already fetched
     if (!static_data_map.has(slug_tail)) {
       try {
         const raw = await fetch_static_data(slug_tail)
@@ -77,7 +76,6 @@ const VenueSlugSelector: React.FC = () => {
       set_dynamic_data_fetched(true)
     } catch (error) {
       console.error('Error fetching dynamic data:', error)
-      //todo yes, it is not perfect(not needed), but it is not a time for adventures
       set_dynamic_data_fetched(false)
     }
   }
@@ -87,6 +85,7 @@ const VenueSlugSelector: React.FC = () => {
     const slug_tail = check_slug(e.currentTarget.value)
     
     e.currentTarget.value = slug_tail
+    set_input_value(slug_tail)
     custom_alert_for_slug_select(e)
     
     if (slug_tail !== '') {
@@ -102,8 +101,8 @@ const VenueSlugSelector: React.FC = () => {
 
   /** when user interacts with input, extra check needed, to prevent, jump without refetch dynamic data */
   const require_fetch_data = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // set_static_data_fetched(false) // checked by key in map
     set_dynamic_data_fetched(false)
+    set_input_value(e.currentTarget.value)
   }
 
   const handle_jump = async (e: React.FocusEvent<HTMLInputElement>) => {
@@ -129,24 +128,23 @@ const VenueSlugSelector: React.FC = () => {
     }
   }, [static_data_fetched, dynamic_data_fetched]);
 
-  useEffect(() => {
-    console.log("Current static data map:", static_data_map)
-  }, [static_data_map])
+  // useEffect(() => {
+  //   console.log("Current static data map:", static_data_map)
+  // }, [static_data_map])
 
-  useEffect(() => {
-    console.log("Current dynamic data obj:", dynamic_data_obj)
-  }, [dynamic_data_obj])
+  // useEffect(() => {
+  //   console.log("Current dynamic data obj:", dynamic_data_obj)
+  // }, [dynamic_data_obj])
 
   return (
     <div>
-      <label htmlFor='venue-slug'>Choose Venue Slug:</label>
       <input
         type='text'
-        title='start typing and select'
-        id='venue-slug'
+        data-test-id='venueSlug'
+        data-raw-value={input_value}
+        title='Start typing and select'
+        placeholder='Start typing the venue slug'
         list='venue-options'
-        placeholder='Start typing...'
-        data-test-id='venue-slug-input' // Set data-test-id for testing
         onChange={require_fetch_data}
         onKeyUp={check_input_value}
         onBlur={handle_jump}

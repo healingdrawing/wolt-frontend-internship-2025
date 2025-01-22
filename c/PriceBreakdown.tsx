@@ -35,7 +35,7 @@ const DeliveryPrice: React.FC = () => {
   }, [ slug, static_data, dynamic_data, cart_value, user_coordinates ])
 
   return (
-    <div>
+    <>
       { result?.error ? (
         <div>
           <h2>Price breakdown</h2>
@@ -57,7 +57,7 @@ const DeliveryPrice: React.FC = () => {
         )}
         </div>
       )}
-    </div>
+    </>
   )
 }
 

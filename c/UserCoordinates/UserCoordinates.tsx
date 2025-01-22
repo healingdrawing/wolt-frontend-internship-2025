@@ -3,7 +3,6 @@ import { useAtom } from 'jotai'
 import { user_coordinates_atom } from '../../utils/atoms'
 import { simulate_tab_event } from '../../utils/tab'
 import { isDesktop } from 'react-device-detect'
-import { dformat } from '../../debug/debug'
 
 
 const UserCoordinates: React.FC = () => {
@@ -128,57 +127,54 @@ const UserCoordinates: React.FC = () => {
 
   return (
     <div>
+      
       <h2>Customer Coordinates</h2>
-      <div>
-        <button
-          title={is_ip_location_disabled ? 'N/A' : ''}
-          disabled={is_ip_location_disabled}
-          onClick={get_coordinates_from_ip}
-        >Get Coordinates from IP</button>
-          <button
-            id='location-from-ip'
-            data-test-id='getLocation'
-            data-raw-value='N/A'
-            className={isDesktop ? 'hide-on-desktop' : ''}
-            title={!navigator.geolocation || is_geolocation_disabled ? 'N/A' : ''}
-            disabled={!navigator.geolocation || is_geolocation_disabled}
-            onClick={get_geolocation}
-          >Get Coordinates from Geolocation</button>
-      </div>
-      <div className='box-destination'>
-        <div className='box-latitude'>
-          <label htmlFor='destination-latitude'>destination latitude:</label>
-          <input
-            type='text'
-            title='float or integer number'
-            id='destination-latitude'
-            data-test-id='userLatitude'
-            data-raw-value={coordinates.latitude}
-            placeholder='Enter Latitude'
-            pattern={number_regex.source}
-            onChange={(e) => handle_input_change(e, 'latitude')}
-            onBlur={(e) => handle_input_on_blur(e, 'latitude')}
-            onKeyUp={(e) => handle_key_up(e)}
-            ref={input_latitude_ref}
-          />
-        </div>
-        
-        <div className='box-longitude'>
-          <label htmlFor='destination-longitude'>destination longitude:</label>
-          <input
-            type='text'
-            title='float or integer number'
-            id='destination-longitude'
-            data-test-id='userLongitude'
-            data-raw-value={coordinates.longitude}
-            placeholder='Enter Longitude'
-            onChange={(e) => handle_input_change(e, 'longitude')}
-            onBlur={(e) => handle_input_on_blur(e, 'longitude')}
-            onKeyUp={(e) => handle_key_up(e)}
-            ref={input_longitude_ref}
-          />
-        </div>
-      </div>
+
+      <button
+        title={is_ip_location_disabled ? 'N/A' : ''}
+        disabled={is_ip_location_disabled}
+        onClick={get_coordinates_from_ip}
+      >Get Coordinates from IP</button>
+      
+      <button
+        id='location-from-ip'
+        data-test-id='getLocation'
+        data-raw-value='N/A'
+        className={isDesktop ? 'hide-on-desktop' : ''}
+        title={!navigator.geolocation || is_geolocation_disabled ? 'N/A' : ''}
+        disabled={!navigator.geolocation || is_geolocation_disabled}
+        onClick={get_geolocation}
+      >Get Coordinates from Geolocation</button>
+      
+      <div className='separator' />
+
+      <input
+        type='text'
+        title='float or integer number'
+        data-test-id='userLatitude'
+        data-raw-value={coordinates.latitude}
+        placeholder='Enter Latitude'
+        pattern={number_regex.source}
+        onChange={(e) => handle_input_change(e, 'latitude')}
+        onBlur={(e) => handle_input_on_blur(e, 'latitude')}
+        onKeyUp={(e) => handle_key_up(e)}
+        ref={input_latitude_ref}
+      />
+      
+      <div className='separator' />
+
+      <input
+        type='text'
+        title='float or integer number'
+        data-test-id='userLongitude'
+        data-raw-value={coordinates.longitude}
+        placeholder='Enter Longitude'
+        onChange={(e) => handle_input_change(e, 'longitude')}
+        onBlur={(e) => handle_input_on_blur(e, 'longitude')}
+        onKeyUp={(e) => handle_key_up(e)}
+        ref={input_longitude_ref}
+      />
+      
     </div>
   )
 }

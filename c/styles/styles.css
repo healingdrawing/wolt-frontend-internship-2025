@@ -1,0 +1,45 @@
+@font-face {
+  font-family: teko;
+  src: url(Teko-VariableFont_wght.ttf);
+}
+
+body{
+  background-color: black;
+}
+
+.dopc{
+  border-radius: 12px;
+  font-family: "teko", serif !important;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+
+  display: flex;              
+  flex-direction: column;
+  align-items: center;
+  padding: 2em;
+  gap: 1em;
+}
+
+.dopc > * {
+  width: calc(100% - 2em);
+  padding: 1em;
+  text-align: center;
+}
+
+div{
+  background-color: #fafafa;
+  border: black 1px solid;
+  border-radius: 8px;
+}
+
+div .separator{
+  border: 1px solid;
+  height: 2px;
+  padding: 0;
+  margin: 0.5em 0;
+}
+
+.hide-on-desktop{
+  display: none;
+}

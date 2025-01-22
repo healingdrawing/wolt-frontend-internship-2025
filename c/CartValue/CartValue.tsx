@@ -40,13 +40,11 @@ const CartValue: React.FC = () => {
 
   return (
     <div>
-      <label htmlFor='cart-value'>Cart Value (EUR):</label>
       <input
         type='text'
-        id='cart-value'
         data-test-id='cartValue'
         data-raw-value={cart_value !== null ? (cart_value * 100).toString() : ''}
-        placeholder='Enter Cart Value'
+        placeholder='Enter Cart Value (EUR)'
         onChange={handle_input_change}
         onBlur={handle_input_on_blur}
         onKeyUp={handle_key_up}
