@@ -1,4 +1,4 @@
-import { calculate_distance } from "./distance"
+import { calculate_distance } from "./distance/distance"
 import type { Delivery_Price_Result, Dynamic_Venue_Data, Static_Venue_Data } from "./types"
 
 export const calculate_delivery_price = (
@@ -9,7 +9,7 @@ export const calculate_delivery_price = (
   user_longitude: number
 ):Delivery_Price_Result => {
   const venue_coordinates = static_data.coordinates
-  const delivery_distance = calculate_distance(user_latitude, user_longitude, venue_coordinates[1], venue_coordinates[0])
+  const delivery_distance = calculate_distance(user_latitude, user_longitude, venue_coordinates[1], venue_coordinates[0]) //venue_coodrinates indices used reverse way without names latitude and longitude, because api returns longitude as first parameter vs case of data with named parameters sorted alphabetically.
 
   // check for too long distance
   for (const range of dynamic_data.distance_ranges) {
