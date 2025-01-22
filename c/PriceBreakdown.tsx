@@ -3,6 +3,8 @@ import { useAtomValue } from 'jotai'
 import {selected_slug_atom, static_data_atom, dynamic_data_atom, cart_value_atom, user_coordinates_atom } from '../utils/atoms'
 import { type Delivery_Price_Result } from '../utils/types'
 import { calculate_delivery_price } from '../utils/delivery_price'
+// import { dformat } from '../debug/debug' // uncomment for monitoring
+
 
 const DeliveryPrice: React.FC = () => {
 
@@ -15,22 +17,26 @@ const DeliveryPrice: React.FC = () => {
 
   useEffect(() => {
     
-    if (slug && static_data.has(slug)
-      && dynamic_data_atom !== null
+    if (dynamic_data_atom !== null
       && cart_value !== null
       && user_coordinates.latitude !== ''
       && user_coordinates.longitude !== ''
     ) {
-      const slug_static_data = static_data.get(slug) !== undefined?static_data.get(slug):null
-      if (!slug_static_data || !dynamic_data) return
-      const deliveryPriceResult = calculate_delivery_price(
+      
+      const slug_static_data = static_data.get(slug)
+      if (!dynamic_data || slug_static_data === undefined) return
+      
+      /** delivery price result */
+      const dpr = calculate_delivery_price(
         slug_static_data,
         dynamic_data,
         cart_value,
         parseFloat(user_coordinates.latitude),
         parseFloat(user_coordinates.longitude)
       )
-      setResult(deliveryPriceResult)
+      // uncomment for monitoring
+      // console.log(dformat( `Price for slug ${slug}`, `${dpr.delivery_distance} m`, `lat:${user_coordinates.latitude} lon:${user_coordinates.longitude}` ))
+      setResult(dpr)
     }
   }, [ slug, static_data, dynamic_data, cart_value, user_coordinates ])
 

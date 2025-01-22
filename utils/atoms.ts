@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { type Static_Venue_Data, type Dynamic_Venue_Data } from './types'
 
 // selected slug
-export const selected_slug_atom = atom<string | null>(null)
+export const selected_slug_atom = atom<string>('')
 
 // hold a Map for static data, to prevent refetching
 export const static_data_atom = atom<Map<string, Static_Venue_Data>>(new Map())
