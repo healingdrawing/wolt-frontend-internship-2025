@@ -157,7 +157,6 @@ const VenueSlugSelector: React.FC = () => {
     <div>
       <input
         type='text'
-        disabled={fetching}
         data-test-id='venueSlug'
         data-raw-value={input_value}
         title='Start typing and select'
@@ -167,6 +166,7 @@ const VenueSlugSelector: React.FC = () => {
         onKeyUp={check_input_value}
         onBlur={handle_jump}
         ref={input_ref}
+        disabled={fetching}
       />
       <datalist id='venue-options' data-test-id='venue-slug-input-list' />
     </div>
