@@ -1,5 +1,5 @@
 import React from 'react'
-import VenueSlugSelector from './VenueSlugSelector.test.tsx/VenueSlugSelector'
+import VenueSlugSelector from './VenueSlugSelector/VenueSlugSelector'
 import UserCoordinates from './UserCoordinates/UserCoordinates'
 import './styles/styles.css' //still experimental according to bun docs, so need to be imported in html as index.css
 import CartValue from './CartValue/CartValue'

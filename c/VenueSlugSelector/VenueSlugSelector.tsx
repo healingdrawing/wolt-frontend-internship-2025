@@ -9,7 +9,7 @@ import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../../u
 const VenueSlugSelector: React.FC = () => {
   const [, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
-  const [, set_dynamic_data_obj] = useAtom(dynamic_data_atom)
+  const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom) //keep for dev monitoring
   const [static_data_fetched, set_static_data_fetched] = useState(false)
   const [dynamic_data_fetched, set_dynamic_data_fetched] = useState(false)
   const [input_value, set_input_value] = useState('')
@@ -92,7 +92,7 @@ const VenueSlugSelector: React.FC = () => {
       set_selected_slug(slug_tail)
       await fetch_data(slug_tail)
     } else {
-      set_selected_slug(null)
+      set_selected_slug('')
       set_dynamic_data_obj(null)
       set_static_data_fetched(false)
       set_dynamic_data_fetched(false)
@@ -128,6 +128,7 @@ const VenueSlugSelector: React.FC = () => {
     }
   }, [static_data_fetched, dynamic_data_fetched]);
 
+  // uncomment for monitoring
   // useEffect(() => {
   //   console.log("Current static data map:", static_data_map)
   // }, [static_data_map])
