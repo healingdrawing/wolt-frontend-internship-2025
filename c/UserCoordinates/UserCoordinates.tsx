@@ -13,6 +13,8 @@ const UserCoordinates: React.FC = () => {
   const set_longitude = (value:string) => set_coordinates((prev) => ({ ...prev, longitude: value}))
   const [show_geo, set_show_geo] = useState(!isDesktop)
   const [show_ip, set_show_ip] = useState(true)
+  const [fetching, set_fetching] = useState(false)
+
   /** Regex to validate coordinates during input and so. allows non-mandatory: minus, period, digits */
   const number_regex = /^-?(\d+)?(\.)?(\d+)?$/
   /** to allow input, without black magic. -.5 etc */
@@ -33,7 +35,10 @@ const UserCoordinates: React.FC = () => {
 
   // try to get coordinates from Geolocation API. For non-Desktop case
   const get_geolocation = () => {
+    if (fetching) return
+
     if (navigator.geolocation) {
+      set_fetching(true)
       navigator.geolocation.getCurrentPosition(
         (position) => {
           set_coordinates({
@@ -63,6 +68,7 @@ const UserCoordinates: React.FC = () => {
           }
         }
       )
+      set_fetching(false)
     } else {
       set_show_geo(false)
       console.error('Geolocation is not supported by this browser.')
@@ -72,11 +78,15 @@ const UserCoordinates: React.FC = () => {
 
   // Function to get coordinates from IP. Show default
   const get_coordinates_from_ip = async () => {
+    if (fetching) return
+    set_fetching(true)
+
     try {
       const response = await fetch('https://ipapi.co/json/')
 
       // check to disable button
       if (!response.ok) {
+        set_fetching(false)
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
@@ -88,12 +98,13 @@ const UserCoordinates: React.FC = () => {
           longitude: data.longitude,
         })
       } else {
+        set_fetching(false)
         throw new Error('Latitude and longitude not found in the response.')
       }
     } catch (error) {
       set_show_ip(false)
       console.error('Error fetching coordinates from IP:', error)
-    }
+    } finally {set_fetching(false)}
   }
 
   // handle manually the input change but update atom on blur
@@ -132,14 +143,14 @@ const UserCoordinates: React.FC = () => {
         data-test-id='getLocation'
         data-raw-value='N/A'
         className={!show_ip ? 'hide' : ''}
-        disabled={!show_ip}
         onClick={get_coordinates_from_ip}
+        disabled={fetching}
       >Get Coordinates from IP</button>
       
       <button
         className={!show_geo ? 'hide' : ''}
-        disabled={!show_geo}
         onClick={get_geolocation}
+        disabled={fetching}
       >Get Coordinates from Geolocation</button>
       
       <div className='separator' />
