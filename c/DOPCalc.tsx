@@ -7,12 +7,12 @@ import PriceBreakdown from './PriceBreakdown'
 
 export const DOPCalc: React.FC = () => {
   return (
-    <>
-      <h2>Delivery Order Price Calculator</h2>
+    <div className='rays dopc'>
+      <h2 className='title'>Delivery Order Price Calculator</h2>
       <VenueSlugSelector />
       <UserCoordinates />
       <CartValue />
       <PriceBreakdown />
-    </>
+    </div>
   )
 }

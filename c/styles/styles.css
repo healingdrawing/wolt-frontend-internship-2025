@@ -3,36 +3,73 @@
   src: url(Teko-VariableFont_wght.ttf);
 }
 
+@font-face {
+  font-family: tekoBold;
+  src: url(Teko-Bold.ttf);
+}
+
+@font-face {
+  font-family: tekoSemibold;
+  src: url(Teko-SemiBold.ttf);
+}
+
+@font-face {
+  font-family: tekoMedium;
+  src: url(Teko-Medium.ttf);
+}
+
+@font-face {
+  font-family: tekoRegular;
+  src: url(Teko-Regular.ttf);
+}
+
+@font-face {
+  font-family: tekoLight;
+  src: url(Teko-Light.ttf);
+}
+
 body{
   background-color: black;
+  margin: 0;
+}
+
+#react-content{
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .dopc{
   border-radius: 12px;
-  font-family: "teko", serif !important;
+  font-family: "tekoSemibold", serif;
   font-optical-sizing: auto;
-  font-weight: 700;
   font-style: normal;
-  background-color: #00c1df;
-  /* background-color: #00a5c1; */
-
-  display: flex;              
-  flex-direction: column;
-  align-items: center;
+  letter-spacing: 1px;
+  
+  min-height: fit-content;
+  
+  display: flex;
+  flex-direction:column;
   padding: 2em;
   gap: 1em;
 }
 
 .dopc > * {
-  width: calc(100% - 2em);
   padding: 1em;
+  width: calc(100% - 2em);
+  min-width: 290px;
+  max-width: 340px;
   text-align: center;
+  align-self: center;
 }
 
 div{
-  background-color: #00a5c1;
-  /* background-color: #00c1df; */
-  /* border: #242424 1px solid; */
+  background-color: hsla(189, 100%, 38%, 0.9);
   border-radius: 8px;
 }
 
@@ -44,6 +81,8 @@ div .separator{
 }
 
 button{
+  font-family: "tekoRegular";
+  letter-spacing: 1px;
   background-color: #011a24;
   color: #139dd5;
   padding: 1em;
@@ -55,6 +94,27 @@ input{
   border-radius: 4px;
 }
 
+.title{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  white-space: nowrap;
+  text-align: center;
+}
+
 .hide{
   display: none;
+}
+
+/* gradient */
+
+.rays {
+  background: repeating-conic-gradient(from 78deg at 50% calc(0% + 3em),
+  transparent 12deg, 
+  rgba(255, 255, 255, 0.8) 24deg, 
+  rgba(255, 255, 255, 0.8) 36deg, 
+  transparent 48deg
+  ), #00c1df;
+  /* position: relative;
+  overflow: hidden; */
 }
