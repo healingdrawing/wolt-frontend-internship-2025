@@ -142,13 +142,13 @@ const UserCoordinates: React.FC = () => {
       <button
         data-test-id='getLocation'
         data-raw-value='N/A'
-        className={!show_ip ? 'hide' : ''}
+        className={!show_ip ? 'hide' : 'teko-regular'}
         onClick={get_coordinates_from_ip}
         disabled={fetching}
       >Get Coordinates from IP</button>
       
       <button
-        className={!show_geo ? 'hide' : ''}
+        className={!show_geo ? 'hide' : 'teko-regular'}
         onClick={get_geolocation}
         disabled={fetching}
       >Get Coordinates from Geolocation</button>

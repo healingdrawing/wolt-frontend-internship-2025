@@ -1,21 +1,6 @@
 @font-face {
-  font-family: teko;
-  src: url(Teko-VariableFont_wght.ttf);
-}
-
-@font-face {
-  font-family: tekoBold;
-  src: url(Teko-Bold.ttf);
-}
-
-@font-face {
   font-family: tekoSemibold;
   src: url(Teko-SemiBold.ttf);
-}
-
-@font-face {
-  font-family: tekoMedium;
-  src: url(Teko-Medium.ttf);
 }
 
 @font-face {
@@ -26,6 +11,18 @@
 @font-face {
   font-family: tekoLight;
   src: url(Teko-Light.ttf);
+}
+
+.teko-light {
+  font-family: tekoLight, serif;
+}
+
+.teko-regular{
+  font-family: tekoRegular, serif;
+}
+
+.teko-semibold{
+  font-family: tekoSemibold, serif;
 }
 
 body{
@@ -69,22 +66,17 @@ body{
 }
 
 div{
-  background-color: hsla(189, 100%, 38%, 0.9);
+  background-color: hsla(189, 100%, 38%, 0.6);
   border-radius: 8px;
 }
 
-div .separator{
-  border: #00c1df 1px solid;
-  height: 0px;
-  padding: 0;
-  margin: 0.5em 0;
-}
+div .x3columns {background:none}
 
 div .x3columns * {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  font-family: tekoRegular, serif;
   margin: 0.5em 0;
+  background: none;
 }
 
 div .x3columns * .start {
@@ -102,17 +94,18 @@ div .x3columns * .end {
 }
 
 button{
-  font-family: "tekoRegular";
   letter-spacing: 1px;
   background-color: #011a24;
   color: #139dd5;
   padding: 1em;
   border-radius: 6px;
-  margin: 2px;
+  margin: auto auto 1em;
 }
 
 input{
   border-radius: 4px;
+  margin: 1em;
+  padding: 0.25em;
 }
 
 .title{
