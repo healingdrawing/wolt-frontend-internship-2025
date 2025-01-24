@@ -10,11 +10,12 @@ https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 - install bun runtime https://bun.sh (`version v1.1.45 (196621f2)` used for development)  
 - install vscode https://code.visualstudio.com  
 - install vscode live server extension https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer  
-- clone the repo  
+- clone the repository  
+- open cloned repository or unzipped folder in vscode  
 - open terminal in root folder(where README.md file placed)  
 - terminal `bun i`  
 - terminal `bun run dev` , it will build project, then run bun mini server to manage API requests locally  
-- open file `public/index.html` in vscode with Live Server extension, it will open browser  
+- open file `public/index.html` in vscode with Live Server extension, it will open browser(in "explorer" tab of vscode, left mouse button click on file `index.html` to open file in editor, then, again in "explorer" tab of vscode, right mouse button click on file `index.html` and choose `Open with Live Server`)  
 - test DOPC.  
 
 ### Target development version  
