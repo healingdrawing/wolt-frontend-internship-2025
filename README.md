@@ -33,3 +33,5 @@ Project created using `bun init` command. The `react` and `jotai` added later us
 
 Rare lags of (Live Server) vscode extension detected. To solve lags, reopen vscode.  
 If execution `bun run dev` fails with error code, reopen vscode fixes this too. Development server written just as is, for dev needs only(it was not part of an assignment).  
+
+Developed on linux.  
