@@ -13,9 +13,8 @@ https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 - clone the repo  
 - open terminal in root folder(where README.md file placed)  
 - terminal `bun i`  
-- terminal `bun run build` , it will build the javascript version of DOPC for web browser  
-- terminal `bun run dev` , it will run bun mini server to manage json locally
-- open `index.html` in vscode with Live Server extension, it will open browser
+- terminal `bun run dev` , it will build project, then run bun mini server to manage API requests locally  
+- open file `public/index.html` in vscode with Live Server extension, it will open browser  
 - test DOPC.  
 
 ### Target development version  
@@ -33,5 +32,4 @@ The `.env` file rule commented inside `.gitignore`, since `.env` used only for m
 Project created using `bun init` command. The `react` and `jotai` added later using `bun add` command. Testing environment set according to bun docs.  
 
 Rare lags of (Live Server) vscode extension detected. To solve lags, reopen vscode.  
-If execution `bun run dev` fails with error code, reopen vscode fix this too. Development server written just as is, for dev needs only(it was not part of an assignment).  
-
+If execution `bun run dev` fails with error code, reopen vscode fixes this too. Development server written just as is, for dev needs only(it was not part of an assignment).  
