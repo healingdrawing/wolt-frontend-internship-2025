@@ -101,7 +101,7 @@ const DeliveryPrice: React.FC = () => {
           </>
         )}
 
-        {cart_value !== null && cart_value >= 1000000 && cart_value < 99999999999999?
+        {(result?.error === undefined) && cart_value !== null && cart_value >= 1000000 && cart_value < 99999999999999?
         (
           <>
             <p>Please consider contacting customer service. It may be beneficial for us to provide you with a personalized delivery service.</p>
@@ -110,7 +110,7 @@ const DeliveryPrice: React.FC = () => {
           <></>
         )}
 
-        {cart_value != null && cart_value >= 99999999999999 ?
+        {(result?.error === undefined) && cart_value != null && cart_value >= 99999999999999 ?
         (
           <>
             <p>Please consider contacting customer service. If you are the owner of this part of the planet, would you like, after paying for the order, to consider opportunity to accept as a gift the construction of a personal palace on this planet, at our expense?</p>
