@@ -23,7 +23,7 @@ const CartValue: React.FC = () => {
   const handle_input_on_blur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (wait_list.includes(e.target.value)){
       set_cart_value(0)
-      e.target.value
+      e.target.value = '0'
     }
   }
 
