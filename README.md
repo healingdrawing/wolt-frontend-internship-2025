@@ -12,7 +12,7 @@ https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 - install vscode live server extension https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer  
 - clone the repository  
 - open cloned repository or unzipped folder in vscode  
-- open terminal in root folder(where README.md file placed)  
+- open terminal in root folder(where this README.md file placed)  
 - terminal `bun i`  
 - terminal `bun run dev` , it will build project, then run bun mini server to manage API requests locally  
 - open file `public/index.html` in vscode with Live Server extension, it will open browser(in "explorer" tab of vscode, left mouse button click on file `index.html` to open file in editor, then, again in "explorer" tab of vscode, right mouse button click on file `index.html` and choose `Open with Live Server`)  
@@ -34,5 +34,7 @@ Project created using `bun init` command. The `react` and `jotai` added later us
 
 Rare lags of (Live Server) vscode extension detected. To solve lags, reopen vscode.  
 If execution `bun run dev` fails with error code, reopen vscode fixes this too. Development server written just as is, for dev needs only(it was not part of an assignment).  
+
+To run tests execute `bun test` command in terminal opened in root folder.  
 
 Developed on linux.  
