@@ -9,12 +9,21 @@
 }
 
 @font-face {
-  font-family: tekoLight;
-  src: url(Teko-Light.ttf);
+  font-family: balooSemibold;
+  src: url(BalooThambi2-SemiBold.ttf);
 }
 
-.teko-light {
-  font-family: tekoLight, serif;
+@font-face {
+  font-family: balooMedium;
+  src: url(BalooThambi2-Medium.ttf);
+}
+
+.baloo-semibold{
+  font-family: balooSemibold, sans-serif;
+}
+
+.baloo-medium{
+  font-family: balooMedium, sans-serif;
 }
 
 .teko-regular{
@@ -70,13 +79,19 @@ div{
   border-radius: 8px;
 }
 
+p {
+  text-align: justify;
+  margin: 1em 0 0 0;
+}
+
 div .x3columns {background:none}
 
 div .x3columns * {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   margin: 0.5em 0;
   background: none;
+  align-items:end;
 }
 
 div .x3columns * .start {

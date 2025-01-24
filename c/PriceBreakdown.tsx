@@ -46,38 +46,55 @@ const DeliveryPrice: React.FC = () => {
         <h2 className='header'>Price breakdown</h2>
         { result?.error ? (
           <>
-            <p className='teko-light'>Cart Value: {result.cart_value} (EUR)</p>
-            <p className='teko-light'>Delivery Distance: {result.delivery_distance} (m)</p>
-            <p className='teko-light'>{result.error}</p>
-          </>
-        ) : (
-          <>
-            {result !== undefined && (
-            <div className='x3columns teko-light'>
+            <div className='x3columns'>
               <div>
                 <span className='start'>Cart Value:</span>
                 <span className='underline'></span>
-                <span className='end'>{result.cart_value} (EUR)</span>
-              </div>
-              <div>
-                <span className='start'>Small Order Surcharge:</span>
-                <span className='underline'></span>
-                <span className='end'>{result.small_order_surcharge} (EUR)</span>
-              </div>
-              <div>
-                <span className='start'>Delivery Fee:</span>
-                <span className='underline'></span>
-                <span className='end'>{result.delivery_fee} (EUR)</span>
+                <span className='baloo-semibold'>{result.cart_value}</span>
+                <span className='baloo-medium'>&nbsp;(EUR)</span>
               </div>
               <div>
                 <span className='start'>Delivery Distance:</span>
                 <span className='underline'></span>
-                <span className='end'>{result.delivery_distance} (m)</span>
+                <span className='baloo-semibold'>{result.delivery_distance}</span>
+                <span className='end baloo-medium'>&nbsp;(m)</span>
+              </div>
+            </div>
+              <p>{result.error}</p>
+          </>
+        ) : (
+          <>
+            {result !== undefined && (
+            <div className='x3columns'>
+              <div>
+                <span className='start'>Cart Value:</span>
+                <span className='underline'></span>
+                <span className='baloo-semibold'>{result.cart_value}</span>
+                <span className='baloo-medium'>&nbsp;(EUR)</span>
+              </div>
+              <div>
+                <span className='start'>Small Order Surcharge:</span>
+                <span className='underline'></span>
+                <span className='end baloo-semibold'>{result.small_order_surcharge}</span>
+                <span className='end baloo-medium'>&nbsp;(EUR)</span>
+              </div>
+              <div>
+                <span className='start'>Delivery Fee:</span>
+                <span className='underline'></span>
+                <span className='baloo-semibold'>{result.delivery_fee}</span>
+                <span className='end baloo-medium'>&nbsp;(EUR)</span>
+              </div>
+              <div>
+                <span className='start'>Delivery Distance:</span>
+                <span className='underline'></span>
+                <span className='baloo-semibold'>{result.delivery_distance}</span>
+                <span className='end baloo-medium'>&nbsp;(m)</span>
               </div>
               <div>
                 <span className='start'>Total Price:</span>
                 <span className='underline'></span>
-                <span className='end'>{result.total_price} (EUR)</span>
+                <span className='baloo-semibold'>{result.total_price}</span>
+                <span className='end baloo-medium'>&nbsp;(EUR)</span>
               </div>
             </div>
           )}
@@ -87,7 +104,7 @@ const DeliveryPrice: React.FC = () => {
         {cart_value !== null && cart_value >= 1000000 && cart_value < 99999999999999?
         (
           <>
-            <span className='teko-light'>Please consider contacting customer service. It may be beneficial for us to provide you with a personalized delivery service.</span>
+            <p>Please consider contacting customer service. It may be beneficial for us to provide you with a personalized delivery service.</p>
           </>
         ) : (
           <></>
@@ -96,7 +113,7 @@ const DeliveryPrice: React.FC = () => {
         {cart_value != null && cart_value >= 99999999999999 ?
         (
           <>
-            <span className='teko-light'>Please consider contacting customer service. If you are the owner of this part of the planet, would you like, after paying for the order, to consider opportunity to accept as a gift the construction of a personal palace on this planet, at our expense?</span>
+            <p>Please consider contacting customer service. If you are the owner of this part of the planet, would you like, after paying for the order, to consider opportunity to accept as a gift the construction of a personal palace on this planet, at our expense?</p>
           </>
         ) : (
           <></>
