@@ -8,7 +8,7 @@ import PriceBreakdown from './PriceBreakdown'
 export const DOPCalc: React.FC = () => {
   return (
     <div className='rays dopc'>
-      <h2 className='title'>Delivery Order Price Calculator</h2>
+      <h2 className='title header'>Delivery Order Price Calculator</h2>
       <VenueSlugSelector />
       <UserCoordinates />
       <CartValue />

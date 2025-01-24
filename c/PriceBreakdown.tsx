@@ -51,15 +51,35 @@ const DeliveryPrice: React.FC = () => {
         </div>
       ) : (
         <div>
-          <h2>Price breakdown</h2>
+          <h2 className='header'>Price breakdown</h2>
           {result !== undefined && (
-          <>
-          <p>Cart Value: {result.cart_value} EUR</p>
-          <p>Small Order Surcharge: {result.small_order_surcharge} EUR</p>
-          <p>Delivery Fee: {result.delivery_fee} EUR</p>
-          <p>Delivery Distance: {result.delivery_distance} m</p>
-          <p>Total Price: {result.total_price} EUR</p>
-          </>
+          <div className='x3columns'>
+            <div>
+              <span className='start'>Cart Value:</span>
+              <span className='underline'></span>
+              <span className='end'>{result.cart_value} (EUR)</span>
+            </div>
+            <div>
+              <span className='start'>Small Order Surcharge:</span>
+              <span className='underline'></span>
+              <span className='end'>{result.small_order_surcharge} (EUR)</span>
+            </div>
+            <div>
+              <span className='start'>Delivery Fee:</span>
+              <span className='underline'></span>
+              <span className='end'>{result.delivery_fee} (EUR)</span>
+            </div>
+            <div>
+              <span className='start'>Delivery Distance:</span>
+              <span className='underline'></span>
+              <span className='end'>{result.delivery_distance} m</span>
+            </div>
+            <div>
+              <span className='start'>Total Price:</span>
+              <span className='underline'></span>
+              <span className='end'>{result.total_price} (EUR)</span>
+            </div>
+          </div>
         )}
         </div>
       )}

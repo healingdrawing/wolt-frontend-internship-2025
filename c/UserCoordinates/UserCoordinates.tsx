@@ -137,7 +137,7 @@ const UserCoordinates: React.FC = () => {
   return (
     <div>
       
-      <h2>Customer Coordinates</h2>
+      <h2 className='header'>Customer Coordinates</h2>
 
       <button
         data-test-id='getLocation'

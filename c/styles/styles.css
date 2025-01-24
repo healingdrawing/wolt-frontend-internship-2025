@@ -80,6 +80,27 @@ div .separator{
   margin: 0.5em 0;
 }
 
+div .x3columns * {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  font-family: tekoRegular, serif;
+  margin: 0.5em 0;
+}
+
+div .x3columns * .start {
+  justify-self: start;
+}
+
+div .x3columns * .underline {
+  border-bottom: 1px solid;
+  width: calc(100% - 2em);
+  justify-self: center;
+}
+
+div .x3columns * .end {
+  justify-self: end;
+}
+
 button{
   font-family: "tekoRegular";
   letter-spacing: 1px;
@@ -100,6 +121,10 @@ input{
   width: 100%;
   white-space: nowrap;
   text-align: center;
+}
+
+.header{
+  padding-bottom: 0.25em;
 }
 
 .hide{
