@@ -8,7 +8,7 @@ const CartValue: React.FC = () => {
   const [cart_value, set_cart_value] = useAtom(cart_value_atom)
   
   /** Validating float input, for EUR with cents */
-  const currency_regex = /^(\d+)?(\.)?(\d{1,2})?$/
+  const currency_regex = /^(?=.{0,14}$)(\d+)?(\.)?(\d{1,2})?$/
 
   /** to allow input, without black magic .5 etc */
   const wait_list = ['','.']
@@ -42,9 +42,10 @@ const CartValue: React.FC = () => {
     <div>
       <input
         type='text'
+        title='Cart value in euros(EUR): Maximum 14 characters'
         data-test-id='cartValue'
         data-raw-value={cart_value !== null ? (cart_value * 100).toString() : ''}
-        placeholder='Enter Cart Value (EUR)'
+        placeholder='Enter cart value (EUR)'
         onChange={handle_input_change}
         onBlur={handle_input_on_blur}
         onKeyUp={handle_key_up}

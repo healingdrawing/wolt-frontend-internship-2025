@@ -16,7 +16,7 @@ const UserCoordinates: React.FC = () => {
   const [fetching, set_fetching] = useState(false)
 
   /** Regex to validate coordinates during input and so. allows non-mandatory: minus, period, digits */
-  const number_regex = /^-?(\d+)?(\.)?(\d+)?$/
+  const number_regex = /^(?=.{0,14}$)-?(\d+)?(\.)?(\d+)?$/
   /** to allow input, without black magic. -.5 etc */
   const wait_list = ['','.','-','-.']
 
@@ -157,7 +157,7 @@ const UserCoordinates: React.FC = () => {
 
       <input
         type='text'
-        title='float or integer number'
+        title='Latitude (in degrees): Maximum 14 characters (float or integer)'
         data-test-id='userLatitude'
         data-raw-value={coordinates.latitude}
         placeholder='Enter Latitude'
@@ -172,7 +172,7 @@ const UserCoordinates: React.FC = () => {
 
       <input
         type='text'
-        title='float or integer number'
+        title='Longitude (in degrees): Maximum 14 characters (float or integer)'
         data-test-id='userLongitude'
         data-raw-value={coordinates.longitude}
         placeholder='Enter Longitude'
