@@ -8,7 +8,7 @@ import { static_data_atom, dynamic_data_atom, selected_slug_atom } from '../../u
 
 const VenueSlugSelector: React.FC = () => {
   const input_ref = useRef<HTMLInputElement>(null)
-  const [, set_selected_slug] = useAtom(selected_slug_atom)
+  const [selected_slug, set_selected_slug] = useAtom(selected_slug_atom)
   const [static_data_map, set_static_data_map] = useAtom(static_data_atom)
   const [dynamic_data_obj, set_dynamic_data_obj] = useAtom(dynamic_data_atom) //keep for dev monitoring
   const [static_data_fetched, set_static_data_fetched] = useState(false)
@@ -41,9 +41,11 @@ const VenueSlugSelector: React.FC = () => {
   /** set @param danger true, to extra check the value of @param raw_slug_tail */
   const fetch_data = async (raw_slug_tail:string, danger:boolean = false) => {
     if (fetching) return
-    
     const slug_tail = danger?check_slug(raw_slug_tail):raw_slug_tail
+    
+    //manage case when correct slug selected then refocus without press Enter key
     if (slug_tail === '') return
+    else set_selected_slug(slug_tail)
 
     if (!static_data_map.has(slug_tail)) {
       set_fetching(true)
