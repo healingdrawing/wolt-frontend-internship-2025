@@ -1,6 +1,8 @@
 # wolt-frontend-internship-2025  
 DOPC - Delivery Order Price Calculator UI.  
 
+![demo](demo.webp)
+
 ## Before build  
 The `.env` file used to manage cors restrictions in development.  
 To run builded version, use vscode live server extension
